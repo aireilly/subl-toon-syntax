@@ -1,0 +1,108 @@
+{
+  "name": "TOON",
+  "author": "TOON Format Contributors",
+  "variables": {
+    "blue": "#4FC3F7",
+    "green": "#81C784",
+    "orange": "#FFB74D",
+    "red": "#E57373",
+    "purple": "#BA68C8",
+    "cyan": "#4DD0E1",
+    "yellow": "#FFF176",
+    "grey": "#B0BEC5"
+  },
+  "globals": {},
+  "rules": [
+    {
+      "name": "TOON Array Name",
+      "scope": "variable.other.array-name.toon",
+      "foreground": "var(blue)",
+      "font_style": "bold"
+    },
+    {
+      "name": "TOON Key",
+      "scope": "variable.other.key.toon",
+      "foreground": "var(blue)"
+    },
+    {
+      "name": "TOON Dotted Path",
+      "scope": "variable.other.dotted-path.toon",
+      "foreground": "var(cyan)",
+      "font_style": "italic"
+    },
+    {
+      "name": "TOON Array Length",
+      "scope": "constant.numeric.array-length.toon",
+      "foreground": "var(purple)",
+      "font_style": "bold"
+    },
+    {
+      "name": "TOON Array Fields",
+      "scope": "meta.array-fields.toon",
+      "foreground": "var(orange)"
+    },
+    {
+      "name": "TOON Delimiter",
+      "scope": "keyword.operator.delimiter.toon",
+      "foreground": "var(purple)"
+    },
+    {
+      "name": "TOON String (Quoted)",
+      "scope": "string.quoted.double.toon",
+      "foreground": "var(green)"
+    },
+    {
+      "name": "TOON String (Unquoted)",
+      "scope": "string.unquoted.toon",
+      "foreground": "var(green)"
+    },
+    {
+      "name": "TOON String Key",
+      "scope": "string.quoted.double.key.toon",
+      "foreground": "var(blue)"
+    },
+    {
+      "name": "TOON Number",
+      "scope": "constant.numeric.toon",
+      "foreground": "var(orange)"
+    },
+    {
+      "name": "TOON Boolean",
+      "scope": "constant.language.boolean.toon",
+      "foreground": "var(purple)"
+    },
+    {
+      "name": "TOON Null",
+      "scope": "constant.language.null.toon",
+      "foreground": "var(purple)",
+      "font_style": "italic"
+    },
+    {
+      "name": "TOON List Item Marker",
+      "scope": "punctuation.definition.list-item.toon",
+      "foreground": "var(yellow)"
+    },
+    {
+      "name": "TOON Separator",
+      "scope": "punctuation.separator.comma.toon, punctuation.separator.tab.toon, punctuation.separator.pipe.toon",
+      "foreground": "var(grey)"
+    },
+    {
+      "name": "TOON Escape Sequence",
+      "scope": "constant.character.escape.toon",
+      "foreground": "var(cyan)"
+    },
+    {
+      "name": "TOON Comment",
+      "scope": "comment.line.toon",
+      "foreground": "var(grey)",
+      "font_style": "italic"
+    },
+    {
+      "name": "TOON Invalid",
+      "scope": "invalid.illegal.toon",
+      "foreground": "var(red)",
+      "background": "#4D0000"
+    }
+  ]
+}

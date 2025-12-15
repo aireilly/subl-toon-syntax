@@ -1,0 +1,227 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/syntax.html
+name: TOON
+file_extensions:
+  - toon
+scope: source.toon
+
+variables:
+  # Identifiers must start with letter/underscore, can contain letters, digits, underscores, dots
+  identifier: '[A-Za-z_][A-Za-z0-9_\.]*'
+  # Numbers: integers, decimals, scientific notation
+  number: '-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?'
+  # Whitespace
+  ws: '[ \t]*'
+
+contexts:
+  main:
+    # Comments (if supported in extensions, though spec doesn't define them)
+    - match: '#.*$'
+      scope: comment.line.toon
+
+    # Root array declaration: [N]: or [N]{fields}: or [N ]: or [N|]:
+    - match: '^\[(\d+)([\,\t\|])?\](\{[^\}]+\})?:'
+      captures:
+        1: constant.numeric.array-length.toon
+        2: keyword.operator.delimiter.toon
+        3: meta.array-fields.toon
+      push: array_value
+
+    # Array declaration: arrayName[N]: or arrayName[N]{fields}: or with delimiter
+    - match: '^({{identifier}})\[(\d+)([\,\t\|])?\](\{[^\}]+\})?:'
+      captures:
+        1: variable.other.array-name.toon
+        2: constant.numeric.array-length.toon
+        3: keyword.operator.delimiter.toon
+        4: meta.array-fields.toon
+      push: array_value
+
+    # Key folding: dotted.path.to.array[N]: or dotted.path.key:
+    - match: '^({{identifier}}(?:\.{{identifier}})+)\[(\d+)([\,\t\|])?\](\{[^\}]+\})?:'
+      captures:
+        1: variable.other.dotted-path.toon
+        2: constant.numeric.array-length.toon
+        3: keyword.operator.delimiter.toon
+        4: meta.array-fields.toon
+      push: array_value
+
+    - match: '^({{identifier}}(?:\.{{identifier}})+):'
+      captures:
+        1: variable.other.dotted-path.toon
+      push: value
+
+    # Key-value pair: key: value (with optional leading whitespace)
+    - match: '^(\s*)({{identifier}}):'
+      captures:
+        2: variable.other.key.toon
+      push: value
+
+    # Quoted key: "quoted key": value (with optional leading whitespace)
+    - match: '^(\s*)("(?:[^"\\]|\\.)*"):'
+      captures:
+        2: string.quoted.double.key.toon
+      push: value
+
+    # List item marker
+    - match: '^[ ]{2,}-\s'
+      scope: punctuation.definition.list-item.toon
+      push: list_item
+
+  value:
+    # Strings (quoted)
+    - match: '"'
+      scope: punctuation.definition.string.begin.toon
+      push: double_quoted_string
+
+    # Numbers
+    - match: '{{number}}'
+      scope: constant.numeric.toon
+
+    # Booleans
+    - match: '\b(true|false)\b'
+      scope: constant.language.boolean.toon
+
+    # Null
+    - match: '\bnull\b'
+      scope: constant.language.null.toon
+
+    # Inline array: [N]: val1,val2,val3
+    - match: '\[(\d+)([\,\t\|])?\]:'
+      captures:
+        1: constant.numeric.array-length.toon
+        2: keyword.operator.delimiter.toon
+      push: inline_array_values
+
+    # Unquoted strings (everything else on the line)
+    - match: '[^\s]+'
+      scope: string.unquoted.toon
+
+    - match: '$'
+      pop: true
+
+  array_value:
+    # Empty line ends context
+    - match: '^(?!\s)'
+      pop: true
+
+    # Array row with values (indented)
+    - match: '^  '
+      push: array_row
+
+    # Nested structure (more indentation)
+    - match: '^    '
+      push: main
+
+  array_row:
+    # Comma-separated values
+    - match: ','
+      scope: punctuation.separator.comma.toon
+
+    # Tab-separated values
+    - match: '\t'
+      scope: punctuation.separator.tab.toon
+
+    # Pipe-separated values
+    - match: '\|'
+      scope: punctuation.separator.pipe.toon
+
+    # Quoted strings
+    - match: '"'
+      scope: punctuation.definition.string.begin.toon
+      push: double_quoted_string
+
+    # Numbers
+    - match: '{{number}}'
+      scope: constant.numeric.toon
+
+    # Booleans
+    - match: '\b(true|false)\b'
+      scope: constant.language.boolean.toon
+
+    # Null
+    - match: '\bnull\b'
+      scope: constant.language.null.toon
+
+    # Unquoted values
+    - match: '[^,\t\|\n"]+'
+      scope: string.unquoted.toon
+
+    - match: '$'
+      pop: true
+
+  list_item:
+    # First field on list item line (e.g., "- id: 1")
+    - match: '({{identifier}}):'
+      captures:
+        1: variable.other.key.toon
+      set: value
+
+    # Quoted key on list item line
+    - match: '("(?:[^"\\]|\\.)*"):'
+      captures:
+        1: string.quoted.double.key.toon
+      set: value
+
+    # Inline array on list item line
+    - match: '\[(\d+)([\,\t\|])?\]:'
+      captures:
+        1: constant.numeric.array-length.toon
+        2: keyword.operator.delimiter.toon
+      set: inline_array_values
+
+    # Primitive value on list item line
+    - match: '(?=\S)'
+      set: value
+
+  inline_array_values:
+    # Comma separator
+    - match: ','
+      scope: punctuation.separator.comma.toon
+
+    # Tab separator
+    - match: '\t'
+      scope: punctuation.separator.tab.toon
+
+    # Pipe separator
+    - match: '\|'
+      scope: punctuation.separator.pipe.toon
+
+    # Quoted strings
+    - match: '"'
+      scope: punctuation.definition.string.begin.toon
+      push: double_quoted_string
+
+    # Numbers
+    - match: '{{number}}'
+      scope: constant.numeric.toon
+
+    # Booleans
+    - match: '\b(true|false)\b'
+      scope: constant.language.boolean.toon
+
+    # Null
+    - match: '\bnull\b'
+      scope: constant.language.null.toon
+
+    # Unquoted strings
+    - match: '[^,\t\|\n"]+'
+      scope: string.unquoted.toon
+
+    - match: '$'
+      pop: true
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.toon
+    - match: '\\["\\/bfnrt]'
+      scope: constant.character.escape.toon
+    - match: '\\u[0-9a-fA-F]{4}'
+      scope: constant.character.escape.unicode.toon
+    - match: '\\.'
+      scope: invalid.illegal.escape.toon
+    - match: '"'
+      scope: punctuation.definition.string.end.toon
+      pop: true
+    - match: '$'
+      scope: invalid.illegal.unclosed-string.toon
+      pop: true
